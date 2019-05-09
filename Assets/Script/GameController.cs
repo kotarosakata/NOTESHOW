@@ -53,10 +53,12 @@ public class GameController : MonoBehaviour {
                 Finaltext.text = "CLEAR";
             }
 
+            isplaying = true;
             isstart = true;
         }
+        SceneManager.LoadScene("Result");
 
-        gameend2();
+      //  gameend2();
 
     }
 
@@ -66,6 +68,7 @@ public class GameController : MonoBehaviour {
 
         yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene("Result");
+
     }
     
     
@@ -86,33 +89,20 @@ public class GameController : MonoBehaviour {
 
     }
 
-    IEnumerator StartStart()
-    {
-        yield return new WaitForSeconds(20);
-        startstart = true;
-        Debug.Log("StartStart");
-    }
+
 
     private void Update()
     {
-        if (!isplaying)
-        {
-            Debug.Log("isplaying");
-            if (Time.timeScale==1.0f)
-            {
-                Debug.Log("Startstart");
-                StartStart();
-                isplaying = true;
-            }
-        }
+
         
         if (Time.timeScale==1.0f&&start)
         {
+            Debug.Log("startmusic");
             StartCoroutine(StartMusic());
             start = false;
         }
 
-        if (startstart)
+        if (Time.timeSinceLevelLoad>=20)
         {
             Debug.Log("第一関門突破");
             if (!_audioSource.isPlaying) {
@@ -135,6 +125,8 @@ public class GameController : MonoBehaviour {
             
             prefab = objectpool.GetObject();
             prefab.GetComponent<move>().startpoint(_lineNum[i]);
+            Data.Instance.notetimes += 1;
+
 //            Debug.Log(iTime.timeSincelevelLoad);
             i++;
             for (int j = 0; j < 3; j++)
@@ -144,6 +136,8 @@ public class GameController : MonoBehaviour {
                     prefab = objectpool.GetObject();
                     prefab.GetComponent<move>().startpoint(_lineNum[i]);
  //                   Debug.Log(i);
+                    Data.Instance.notetimes += 1;
+
                     i++;
                 }
             }

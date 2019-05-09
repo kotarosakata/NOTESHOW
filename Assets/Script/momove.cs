@@ -14,7 +14,8 @@ public class Data
     public int Justice = 0;
     public int Attack = 0;
     public int Miss = 0;
-    
+    public int notetimes = 0;
+
 }
 public class momove : MonoBehaviour
 {

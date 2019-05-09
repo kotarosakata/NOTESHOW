@@ -14,15 +14,15 @@ public class ResultController : MonoBehaviour
     public GameObject Attack;
 
     public GameObject Miss;
-
+    
     public GameObject Rank;
     // Start is called before the first frame update
     void Start()
     {
         JusticeCritical.GetComponent<Text>().text = "" + Data.Instance.JusticeCritical;
-        Justice.GetComponent<Text>().text = "" + Data.Instance.JusticeCritical;
+        Justice.GetComponent<Text>().text = "" + Data.Instance.Justice;
         Attack.GetComponent<Text>().text = "" + Data.Instance.Attack;
-        Miss.GetComponent<Text>().text = "" + Data.Instance.Miss;
+        Miss.GetComponent<Text>().text = "" + (Data.Instance.notetimes - (Data.Instance.JusticeCritical+Data.Instance.Justice+Data.Instance.Attack));
         Rank.GetComponent<Text>().text = "未実装";
     }
     void Update()
