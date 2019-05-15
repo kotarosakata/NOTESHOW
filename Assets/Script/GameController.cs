@@ -102,14 +102,14 @@ public class GameController : MonoBehaviour {
             start = false;
         }
 
-        if (Time.timeSinceLevelLoad>=20)
+        if (Time.timeSinceLevelLoad>=69)
         {
-            Debug.Log("第一関門突破");
+//            Debug.Log("第一関門突破");
             if (!_audioSource.isPlaying) {
-                Debug.Log("第二関門突破");
+  //              Debug.Log("第二関門突破");
                 if (!check.GetComponent<reload>().Onwaked)
                 {
-                    Debug.Log("第三関門突破");
+    //                Debug.Log("第三関門突破");
                     gameend();
                 }
             }
@@ -120,7 +120,7 @@ public class GameController : MonoBehaviour {
         
 
 //        Debug.Log(Math.Abs(Time.time - _timing[i]));
-        if (Math.Abs(Time.timeSinceLevelLoad-Starttime - _timing[i]+Offset) < 0.05)
+        if (Math.Abs(Time.timeSinceLevelLoad-Starttime - _timing[i]) < 0.05)
         {
             
             prefab = objectpool.GetObject();

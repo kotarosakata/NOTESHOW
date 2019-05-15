@@ -24,24 +24,33 @@ public class volumechange : MonoBehaviour
     {
         
         Volume2 = gameObject.GetComponent<Slider>().value;
+        PlayerPrefs.SetInt("Offset",(int)Volume2);
+
         Text.text = "" + Volume2;
         GameObject.GetComponent<GameController>().Offset = Volume2 * 0.001f;
+
  //       Debug.Log(Volume2);
     }
 
     public void VolumeChange()
     {
         Volume2 = gameObject.GetComponent<Slider>().value;
+        PlayerPrefs.SetInt("Speed",(int)Volume2);
+
         Text.text = "" + Volume2;
         GameObject.GetComponent<GameController>().notesspeed = (int)Volume2*20;
+
     }
 
     public void Covered()
     {
         Volume2 = gameObject.GetComponent<Slider>().value;
+        PlayerPrefs.SetInt("Cover",(int)Volume2);
+
         Text.text = "" + Volume2;
         _recttransform.y = 720-56*Volume2;
         GameObject2.GetComponent<RectTransform>().localPosition = _recttransform;
+
 
     }
 

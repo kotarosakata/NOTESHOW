@@ -6,17 +6,7 @@ using System.Net.Mime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Data  
-{
-    public static Data Instance = new Data();
 
-    public int JusticeCritical = 0;
-    public int Justice = 0;
-    public int Attack = 0;
-    public int Miss = 0;
-    public int notetimes = 0;
-
-}
 public class momove : MonoBehaviour
 {
     public float touchtiming;
@@ -49,10 +39,13 @@ public class momove : MonoBehaviour
         Data.Instance.Justice = 0;
         Data.Instance.Attack = 0;
         Data.Instance.Miss = 0;
+        Data.Instance.notetimes = 0;
+        Data.Instance.ThroughNotes = 0;
         _renderer1 = gameObject.GetComponent<Renderer>();
         _renderer = gameObject.GetComponent<Renderer>();
         _gameObject= GameObject.Find("GameMusic");
         _gameController = _gameObject.GetComponent<GameController>();
+
         LoadCSV();
         for (int i = 0; i < 440; i++)
         {
@@ -65,6 +58,7 @@ public class momove : MonoBehaviour
 
             ComboNotes[i] = false;
         }
+//            Debug.Log(a);
 
     }
 
@@ -76,34 +70,39 @@ public class momove : MonoBehaviour
     //    Debug.Log(touchtiming);
         StartCoroutine(colorchenge());
         audio.Play();
-
-
- 
-          
         if (start)
         {
-            notespeedoffset = (242.0f / _gameController.notesspeed)-2.42f;
+
+            notespeedoffset = (242.0f / _gameController.notesspeed)-2.42f+_gameController.Offset;
             start = false;
         }
 
-  //      Debug.Log("touch");
+ 
+          
+        
+
+        Debug.Log("touch");
         for (int i = a;i<=(n-1); i++)
         {
-            if (Math.Abs(LineNotes[i]-touchtiming+notespeedoffset)<0.04)
+            if (Math.Abs(LineNotes[i]-touchtiming+notespeedoffset)<0.03)
             {
-                a=++i;
                 Data.Instance.JusticeCritical += 1;
                 ComboNotes[i] = true;
+                
                 texttext.color = Color.yellow;
                 texttext.text = "Justice"+ Environment.NewLine+" Critical";
                     _gameController.CobBotimes += 1;
                     combotext.text = ""+_gameController.CobBotimes;
-
-                
+                    Debug.Log("JusticeCritical");
+                        Debug.Log(_gameController.CobBotimes+","+Notespossition);
+                    a = ++i;
+                    if (ComboNotes[i-1])
+                    {
+                        break;
+                    }
             }
-            else if (Math.Abs(LineNotes[i]-touchtiming+notespeedoffset)<0.06)
+            else if (Math.Abs(LineNotes[i]-touchtiming+notespeedoffset)<0.05)
             {
-                a=++i;
                 Data.Instance.Justice += 1;
                 ComboNotes[i] = true;
                 texttext.color = Color.yellow;
@@ -112,31 +111,43 @@ public class momove : MonoBehaviour
                     combotext.text = ""+_gameController.CobBotimes;
 
 
-                
-
-            }else if (Math.Abs(LineNotes[i] - touchtiming+notespeedoffset) < 0.1)
+                Debug.Log(_gameController.CobBotimes+","+Notespossition);
+                a = ++i;
+                if (ComboNotes[i-1])
+                {
+                    break;
+                }
+            }else if (Math.Abs(LineNotes[i] - touchtiming+notespeedoffset) < 0.10)
             {
-                a=++i;
                 Data.Instance.Attack += 1;
                 ComboNotes[i] = true;
                 texttext.color = Color.green;
                 texttext.text = "Attack";
                     _gameController.CobBotimes += 1;
                     combotext.text = ""+_gameController.CobBotimes;
-
-                
-            }else if (Math.Abs(LineNotes[i] - touchtiming+notespeedoffset)<0.2)
+                Debug.Log(_gameController.CobBotimes+","+Notespossition);
+                a = ++i;
+                if (ComboNotes[i-1])
+                {
+                    break;
+                }
+            }else if (Math.Abs(LineNotes[i] - touchtiming+notespeedoffset)<0.15)
             {
-                a=++i;
                 Data.Instance.Miss += 1;
                 ComboNotes[i] = true;
                 texttext.color = Color.cyan;        
                 texttext.text = "MISS";
                 _gameController.CobBotimes = 0;
-//                debugext.text = "miss" + _gameController.CobBotimes;
+                Debug.Log("MISS");
                 combotext.text = "";
-                
+                a = ++i;
+                if (ComboNotes[i-1])
+                {
+                    break;
+                }
             }
+
+            
 
             
         }
@@ -144,12 +155,8 @@ public class momove : MonoBehaviour
         StartCoroutine(Coroitine());
 
     }
+    
 
-    IEnumerator Coroutine2()
-    {
-        yield return new WaitForSeconds(0.2f);
-        SceneManager.LoadScene("Result");
-    }
 
     IEnumerator colorchenge()
     {
@@ -159,32 +166,37 @@ public class momove : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        
+        float time = Time.timeSinceLevelLoad;
+        for (int i= a; i < (n-1); i++)
+        {
+            if ((time-(LineNotes[i]+notespeedoffset))<0.3f&&(time-(LineNotes[i]+notespeedoffset))>0.15f)
+            {
+                if (!ComboNotes[i])
+                {
+                    _gameController.CobBotimes = 0;
+                    combotext.text = "";  
+
+//                    Debug.Log(time-LineNotes[i]+notespeedoffset+",,"+Notespossition+",,"+time);
+                    ComboNotes[i] = true;
+                    StartCoroutine(Coroitine());
+                }
+            }
+        }
+        
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        misstiming = Time.timeSinceLevelLoad;
         
         
 
         if (other.CompareTag("Player"))
         {
-            for (int i = a; i < (n-1); i++)
-            {
-                if (Math.Abs(LineNotes[i]-misstiming)<5)
-                {
-                    if (!ComboNotes[i])
-                    {
-                        Data.Instance.Miss += 1;
-                        _gameController.CobBotimes = 0;
-                        combotext.text = "";
-
-                        ComboNotes[i] = true;
-                        StartCoroutine(Coroitine());
-                        other.gameObject.SetActive(false);
-                    }
-                    
-                }
-                
-            }
+            other.gameObject.SetActive(false);
+    
            
         }
         
@@ -231,6 +243,18 @@ public class momove : MonoBehaviour
 //       streamWriter.Flush();
 //        streamWriter.Close ();
 //    }
+}
+public class Data  
+{
+    public static Data Instance = new Data();
+
+    public int JusticeCritical = 0;
+    public int Justice = 0;
+    public int Attack = 0;
+    public int Miss = 0;
+    public int notetimes = 0;
+    public int ThroughNotes = 0;
+
 }
 
 
